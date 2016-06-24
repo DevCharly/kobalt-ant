@@ -10,6 +10,7 @@ val project = project {
 	dependencies {
 		provided("com.beust:kobalt-plugin-api:")
 		compile("org.apache.ant:ant:1.9.7")
+		compile(file("../kotlin-ant-dsl/kobaltBuild/libs/kotlin-ant-dsl-0.1.jar"))
 	}
 
 	assemble {
@@ -21,14 +22,6 @@ val project = project {
 				exclude("**/kotlin-stdlib-*.jar")
 				exclude("**/kotlin-runtime-*.jar")
 			}
-		}
-
-		// Kotlin AntBuilder only
-		jar {
-			name = "kotlin-antbuilder-$version.jar"
-
-			exclude("**/com/devcharly/kobalt/**")
-			exclude("**/kobalt-plugin.xml")
 		}
 	}
 
