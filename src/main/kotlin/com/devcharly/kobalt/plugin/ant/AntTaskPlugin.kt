@@ -22,7 +22,7 @@ import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
 import com.beust.kobalt.misc.KobaltLogger
 import com.beust.kobalt.misc.error
-import com.devcharly.kotlin.ant.AntBuilder
+import com.devcharly.kotlin.ant.Ant
 import com.devcharly.kotlin.ant.LogLevel
 import org.apache.tools.ant.BuildException
 import org.apache.tools.ant.Task
@@ -79,8 +79,8 @@ class AntTask(val taskName: String,
 		val runBefore: Array<String> = arrayOf(), val runAfter: Array<String> = arrayOf(),
 		val alwaysRunAfter: Array<String> = arrayOf(),
 		val basedir: String = "", val logLevel: LogLevel? = null,
-		tasks: AntBuilder.() -> Unit)
-	: AntBuilder(tasks)
+		tasks: Ant.() -> Unit)
+	: Ant(tasks)
 {
 	fun executeTasks() : TaskResult {
 		// create basedir
@@ -129,7 +129,7 @@ fun Project.antTask(taskName: String,
 		runBefore: Array<String> = arrayOf(), runAfter: Array<String> = arrayOf(),
 		alwaysRunAfter: Array<String> = arrayOf(),
 		basedir: String = "", logLevel: LogLevel? = null,
-		tasks: AntBuilder.() -> Unit)
+		tasks: Ant.() -> Unit)
 = AntTask(taskName, description, group,
 		dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter,
 		basedir, logLevel, tasks).apply {
