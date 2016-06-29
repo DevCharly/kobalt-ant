@@ -2,6 +2,17 @@ import com.beust.kobalt.*
 import com.devcharly.kobalt.plugin.ant.*
 import com.devcharly.kotlin.ant.*
 
+// To run this examples build on a development machine, it is expected that projects
+//     https://github.com/DevCharly/kobalt-ant
+// and
+//     https://github.com/DevCharly/kotlin-ant-dsl
+// are checked out into the same parent folder. E.g.:
+//    /some-path/kobalt-ant
+//    /some-path/kotlin-ant-dsl
+val bc = buildFileClasspath(
+	file("../../kotlin-ant-dsl/kobaltBuild/classes")
+)
+
 val plugins = plugins(
 	file("../kobaltBuild/classes")
 )
@@ -16,7 +27,7 @@ val project = project {
 			+"bb"
 			+"cc"
 		}
-		echo(level = LogLevel.ERR) {
+		echo(level = EchoLevel.ERROR) {
 			+"""
 				111
 				22
@@ -48,8 +59,8 @@ val project = project {
 		copy(todir = "dir") {
 			fileset("dir1")
 			fileset("dir2") {
-				include(name="**/*.java")
-				exclude(name="**/*Test*")
+				include(name = "**/*.java")
+				exclude(name = "**/*Test*")
 			}
 		}
 	}
@@ -87,9 +98,10 @@ val project = project {
 				attribute("Class-Path", "common.jar")
 			}
 
-			service("javax.script.ScriptEngineFactory",
-					"org.acme.PinkyLanguage",
-					"org.acme.BrainLanguage")
+			service("javax.script.ScriptEngineFactory") {
+				provider("org.acme.PinkyLanguage")
+				provider("org.acme.BrainLanguage")
+			}
 		}
 	}
 }
