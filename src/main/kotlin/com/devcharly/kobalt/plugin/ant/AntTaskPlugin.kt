@@ -80,7 +80,7 @@ class AntTask(val taskName: String,
 		val alwaysRunAfter: Array<String> = arrayOf(),
 		val basedir: String = "", val logLevel: LogLevel? = null,
 		tasks: Ant.() -> Unit)
-	: Ant(tasks)
+	: Ant(execute = false, tasks = tasks)
 {
 	fun executeTasks() : TaskResult {
 		// create basedir
