@@ -1,7 +1,9 @@
 import com.beust.kobalt.*
 import com.beust.kobalt.plugin.packaging.*
 
-val project = project {
+val repos = repos("https://dl.bintray.com/devcharly/maven/")
+
+val plugin = project {
 	name = "kobalt-ant"
 	group = "com.devcharly.kobalt"
 	artifactId = name
@@ -9,8 +11,8 @@ val project = project {
 
 	dependencies {
 		provided("com.beust:kobalt-plugin-api:")
+		compile("com.devcharly:kotlin-ant-dsl:0.2")
 		compile("org.apache.ant:ant:1.9.7")
-		compile(file("../kotlin-ant-dsl/kobaltBuild/libs/kotlin-ant-dsl-0.1.jar"))
 	}
 
 	assemble {
@@ -31,4 +33,10 @@ val project = project {
 		publish = true
 	}
 */
+}
+
+val examples = project(plugin) {
+	name = "kobalt-ant-examples"
+	directory = "examples"
+	sourceDirectories { path("src") }
 }
