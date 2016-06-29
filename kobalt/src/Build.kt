@@ -1,11 +1,12 @@
 import com.beust.kobalt.*
 import com.beust.kobalt.plugin.packaging.*
+import com.beust.kobalt.plugin.publish.bintray
 
 val repos = repos("https://dl.bintray.com/devcharly/maven/")
 
 val plugin = project {
 	name = "kobalt-ant"
-	group = "com.devcharly.kobalt"
+	group = "com.devcharly"
 	artifactId = name
 	version = "0.1"
 
@@ -27,12 +28,9 @@ val plugin = project {
 		}
 	}
 
-
-/*
 	bintray {
 		publish = true
 	}
-*/
 }
 
 val examples = project(plugin) {
