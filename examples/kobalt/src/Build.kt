@@ -2,6 +2,9 @@ import com.beust.kobalt.*
 import com.devcharly.kobalt.plugin.ant.*
 import com.devcharly.kotlin.ant.*
 
+val repos = repos("https://dl.bintray.com/devcharly/maven/")
+val plugins = plugins("com.devcharly:kobalt-ant:")
+
 // To run this examples build on a development machine, it is expected that projects
 //     https://github.com/DevCharly/kobalt-ant
 // and
@@ -9,6 +12,7 @@ import com.devcharly.kotlin.ant.*
 // are checked out into the same parent folder. E.g.:
 //    /some-path/kobalt-ant
 //    /some-path/kotlin-ant-dsl
+/*
 val bc = buildFileClasspath(
 	file("../../kotlin-ant-dsl/kobaltBuild/classes")
 )
@@ -16,6 +20,7 @@ val bc = buildFileClasspath(
 val plugins = plugins(
 	file("../kobaltBuild/classes")
 )
+*/
 
 val project = project {
 	name = "project"
