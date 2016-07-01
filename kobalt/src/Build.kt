@@ -2,17 +2,15 @@ import com.beust.kobalt.*
 import com.beust.kobalt.plugin.packaging.*
 import com.beust.kobalt.plugin.publish.bintray
 
-val repos = repos("https://dl.bintray.com/devcharly/maven/")
-
 val plugin = project {
 	name = "kobalt-ant"
 	group = "com.devcharly"
 	artifactId = name
-	version = "0.1"
+	version = "0.2"
 
 	dependencies {
 		provided("com.beust:kobalt-plugin-api:")
-		compile("com.devcharly:kotlin-ant-dsl:0.2")
+		compile("com.devcharly:kotlin-ant-dsl:0.3")
 		compile("org.apache.ant:ant:1.9.7")
 	}
 
