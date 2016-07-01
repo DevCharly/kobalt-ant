@@ -7,9 +7,21 @@ Supports definition of per-project Kobalt tasks (similar to Ant targets)
 and execution of [Ant tasks].
 
 ```kotlin
+val repos = repos("https://dl.bintray.com/devcharly/maven/")
+val plugins = plugins("com.devcharly:kobalt-ant:")
+
 val project = project {
     antTask("hello") {
-       echo("Hello World")
+        echo("Hello World")
+    }
+
+    antTask("copy-dir1") {
+        mkdir("dir1")
+        copy(todir = "dir1") {
+            fileset(dir = "dir2")
+                include(name = "**/*.txt")
+            }
+        }
     }
 }
 ```
@@ -23,18 +35,6 @@ You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
 ## Supported Ant features
 
 See [Kotlin Ant DSL](https://github.com/DevCharly/kotlin-ant-dsl#supported-ant-features)
-
-
-## Download
-
-[![Download](https://api.bintray.com/packages/devcharly/maven/kobalt-ant/images/download.svg) ](https://bintray.com/devcharly/maven/kobalt-ant/_latestVersion)
-
-For Maven, Gradle or Kobalt use:
-
-    Repository: https://dl.bintray.com/devcharly/maven/ 
-    Group:      com.devcharly
-    Artifact:   kobalt-ant
-    Version:    (latest)
 
 
 [Kobalt]: http://beust.com/kobalt
