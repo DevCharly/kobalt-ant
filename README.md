@@ -7,7 +7,6 @@ Supports definition of per-project Kobalt tasks (similar to Ant targets)
 and execution of [Ant tasks].
 
 ```kotlin
-val repos = repos("https://dl.bintray.com/devcharly/maven/")
 val plugins = plugins("com.devcharly:kobalt-ant:")
 
 val project = project {
