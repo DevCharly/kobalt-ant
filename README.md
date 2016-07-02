@@ -36,6 +36,11 @@ You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
 See [Kotlin Ant DSL](https://github.com/DevCharly/kotlin-ant-dsl#supported-ant-features)
 
 
+## Requirements
+
+Kobalt 0.834 or later
+
+
 [Kobalt]: http://beust.com/kobalt
 [Ant]: http://ant.apache.org/
 [Ant tasks]: http://ant.apache.org/manual/tasksoverview.html
