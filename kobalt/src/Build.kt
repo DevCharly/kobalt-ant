@@ -15,7 +15,7 @@ val plugin = project {
 	}
 
 	assemble {
-		// Kobalt plugin (includes ant.jar)
+		// Kobalt plugin (includes kotlin-ant-dsl.jar and ant.jar)
 		mavenJars {
 			jar {
 				fatJar = true
@@ -23,6 +23,10 @@ val plugin = project {
 				exclude("**/kotlin-stdlib-*.jar")
 				exclude("**/kotlin-runtime-*.jar")
 			}
+		}
+
+		jar {
+			name = "${project.name}-core-$version.jar"
 		}
 	}
 
@@ -32,7 +36,7 @@ val plugin = project {
 }
 
 val examples = project(plugin) {
-	name = "kobalt-ant-examples"
+	name = "examples"
 	directory = "examples"
 	sourceDirectories { path("src") }
 }
