@@ -95,7 +95,10 @@ val project = project {
 		gunzip(src = "out1.tar.gz", dest = "out1g.tar")
 	}
 
-	antTask("jar", basedir = "_zip_") {
+	antTask("jar", basedir = "_zip_",
+			inputFiles = arrayOf("_zip_/dir", "_files_"),
+			outputFiles = arrayOf("_zip_/out1.jar")
+	) {
 		jar("out1.jar", basedir = "dir") {
 			manifest {
 				attribute("Main-Class", "com.myapp.Main")

@@ -16,10 +16,12 @@
 
 package com.devcharly.kobalt.plugin.ant
 
+import com.beust.kobalt.IncrementalTaskInfo
 import com.beust.kobalt.TaskResult
 import com.beust.kobalt.api.*
 import com.beust.kobalt.api.annotation.AnnotationDefault
 import com.beust.kobalt.api.annotation.Directive
+import com.beust.kobalt.maven.Md5
 import com.beust.kobalt.misc.KobaltLogger
 import com.beust.kobalt.misc.error
 import com.devcharly.kotlin.ant.Ant
@@ -41,7 +43,7 @@ import java.util.*
  *     }
  * }
  */
-class AntTaskPlugin : BasePlugin(), ITaskContributor {
+class AntTaskPlugin : BasePlugin(), ITaskContributor, IIncrementalTaskContributor {
 	override val name = PLUGIN_NAME
 
 	companion object {
@@ -54,6 +56,7 @@ class AntTaskPlugin : BasePlugin(), ITaskContributor {
 		return project.projectProperties.get(ANT_TASKS) != null
 	}
 
+	// ITaskContributor
 	override fun tasksFor(project: Project, context: KobaltContext): List<DynamicTask> {
 		@Suppress("UNCHECKED_CAST")
 		val antTasks = project.projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
@@ -61,12 +64,52 @@ class AntTaskPlugin : BasePlugin(), ITaskContributor {
 
 		// add new tasks for project
 		val dynamicTasks = ArrayList<DynamicTask>()
-		antTasks.forEach {
+		antTasks.filter { !it.isIncremental() }.forEach {
 			dynamicTasks.add(DynamicTask(this, it.taskName, it.description, it.group, project,
 					it.dependsOn.toList(), it.reverseDependsOn.toList(),
 					it.runBefore.toList(), it.runAfter.toList(), it.alwaysRunAfter.toList(),
 					closure = { project ->
 						it.executeTasks()
+					}))
+		}
+		return dynamicTasks
+	}
+
+	// IIncrementalTaskContributor
+	override fun incrementalTasksFor(project: Project, context: KobaltContext): List<IncrementalDynamicTask> {
+		@Suppress("UNCHECKED_CAST")
+		val antTasks = project.projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
+				?: return emptyList()
+
+		// add new tasks for project
+		val dynamicTasks = ArrayList<IncrementalDynamicTask>()
+		antTasks.filter { it.isIncremental() }.forEach {
+			dynamicTasks.add(IncrementalDynamicTask(context, this, it.taskName, it.description, it.group, project,
+					it.dependsOn.toList(), it.reverseDependsOn.toList(),
+					it.runBefore.toList(), it.runAfter.toList(), it.alwaysRunAfter.toList(),
+					incrementalClosure = { project ->
+						IncrementalTaskInfo(
+							inputChecksum = {
+								if (it.inputChecksum != null)
+									it.inputChecksum!!()
+								else if (it.inputFiles != null)
+									Md5.toMd5Directories(it.inputFiles.map { File(it) })
+								else
+									null
+							},
+							outputChecksum = {
+								if (it.outputChecksum != null)
+									it.outputChecksum!!()
+								else if (it.outputFiles != null)
+									Md5.toMd5Directories(it.outputFiles.map { File(it) })
+								else
+									null
+							},
+							task = { project ->
+								it.executeTasks()
+							},
+							context = context
+						)
 					}))
 		}
 		return dynamicTasks
@@ -78,11 +121,15 @@ class AntTask(val taskName: String,
 		val dependsOn: Array<String> = arrayOf(), val reverseDependsOn: Array<String> = arrayOf(),
 		val runBefore: Array<String> = arrayOf(), val runAfter: Array<String> = arrayOf(),
 		val alwaysRunAfter: Array<String> = arrayOf(),
+		val inputFiles: Array<String>? = null, val outputFiles: Array<String>? = null,
+		val inputChecksum: (() -> String?)? = null, val outputChecksum: (() -> String?)? = null,
 		val basedir: String = "", val logLevel: LogLevel? = null,
-		tasks: Ant.() -> Unit)
-	: Ant(execute = false, tasks = tasks)
+		tasks: AntTask.() -> Unit)
+	: Ant(execute = false, tasks = tasks as Ant.() -> Unit)
 {
-	fun executeTasks() : TaskResult {
+	fun isIncremental() = inputFiles != null || inputChecksum != null || outputFiles != null || outputChecksum != null
+
+	fun executeTasks(): TaskResult {
 		// create basedir
 		if (basedir != "")
 			File(basedir).mkdirs()
@@ -128,10 +175,14 @@ fun Project.antTask(taskName: String,
 		dependsOn: Array<String> = arrayOf(), reverseDependsOn: Array<String> = arrayOf(),
 		runBefore: Array<String> = arrayOf(), runAfter: Array<String> = arrayOf(),
 		alwaysRunAfter: Array<String> = arrayOf(),
+		inputFiles: Array<String>? = null, outputFiles: Array<String>? = null,
+		inputChecksum: (() -> String?)? = null, outputChecksum: (() -> String?)? = null,
 		basedir: String = "", logLevel: LogLevel? = null,
-		tasks: Ant.() -> Unit)
+		tasks: AntTask.() -> Unit)
 = AntTask(taskName, description, group,
 		dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter,
+		inputFiles, outputFiles,
+		inputChecksum, outputChecksum,
 		basedir, logLevel, tasks).apply {
 	@Suppress("UNCHECKED_CAST")
 	val antTasks = projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?

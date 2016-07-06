@@ -6,6 +6,11 @@
 Supports definition of per-project Kobalt tasks (similar to Ant targets)
 and execution of [Ant tasks].
 
+The primary goal is support migration of Ant builds to Kobalt.
+You can use [built-it Ant tasks](https://github.com/DevCharly/kotlin-ant-dsl#supported-ant-features) in Kobalt.
+Or [define functions](https://github.com/DevCharly/kotlin-ant-dsl#kotlin-ant-dsl)
+to use your custom Ant tasks.
+
 ```kotlin
 val plugins = plugins("com.devcharly:kobalt-ant:")
 
@@ -14,19 +19,34 @@ val project = project {
         echo("Hello World")
     }
 
-    antTask("copy-dir1") {
-        mkdir("dir1")
-        copy(todir = "dir1") {
-            fileset(dir = "dir2")
-                include(name = "**/*.txt")
-            }
+    antTask("copy-dir1-to-dir2") {
+        mkdir("dir2")
+        copy(todir = "dir2") {
+            fileset(dir = "dir1")
+            include(name = "**/*.txt")
         }
     }
 }
 ```
 
-The primary goal is support migration of Ant builds to Kobalt.
-You can use your custom Ant tasks in Kobalt. Or use built-it Ant tasks.
+Kobalt's incremental tasks are supported:
+
+```kotlin
+val plugins = plugins("com.devcharly:kobalt-ant:")
+
+val project = project {
+    antTask("copy-dir1-to-dir2",
+            inputFiles = arrayOf("dir1"),
+            outputFiles = arrayOf("dir2")
+    ) {
+        mkdir("dir2")
+        copy(todir = "dir2") {
+            fileset(dir = "dir1")
+            include(name = "**/*.txt")
+        }
+    }
+}
+```
 
 [Examples](examples/kobalt/src/Build.kt)
 
@@ -38,7 +58,7 @@ See [Kotlin Ant DSL](https://github.com/DevCharly/kotlin-ant-dsl#supported-ant-f
 
 ## Requirements
 
-Kobalt 0.834 or later
+Kobalt 0.837 or later
 
 
 [Kobalt]: http://beust.com/kobalt
