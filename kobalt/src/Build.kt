@@ -39,4 +39,8 @@ val examples = project(plugin) {
 	name = "examples"
 	directory = "examples"
 	sourceDirectories { path("kobalt/src") }
+
+	dependencies {
+		provided("com.beust:kobalt-plugin-api:")
+	}
 }
