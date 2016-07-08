@@ -25,6 +25,7 @@ import com.beust.kobalt.maven.Md5
 import com.beust.kobalt.misc.KobaltLogger
 import com.beust.kobalt.misc.error
 import com.devcharly.kotlin.ant.Ant
+import com.devcharly.kotlin.ant.AntContext
 import com.devcharly.kotlin.ant.LogLevel
 import org.apache.tools.ant.BuildException
 import org.apache.tools.ant.Task
@@ -123,30 +124,21 @@ class AntTask(val taskName: String,
 		val alwaysRunAfter: Array<String> = arrayOf(),
 		val inputFiles: Array<String>? = null, val outputFiles: Array<String>? = null,
 		val inputChecksum: (() -> String?)? = null, val outputChecksum: (() -> String?)? = null,
-		val basedir: String = "", val logLevel: LogLevel? = null,
+		basedir: String = "", logLevel: LogLevel? = null,
+		context: AntContext? = null,
 		tasks: AntTask.() -> Unit)
-	: Ant(execute = false, tasks = tasks as Ant.() -> Unit)
+	: Ant(context ?: AntContext(basedir, logLevel ?: kobalt2antLogLevel()), execute = false, tasks = tasks as Ant.() -> Unit)
 {
 	fun isIncremental() = inputFiles != null || inputChecksum != null || outputFiles != null || outputChecksum != null
 
 	fun executeTasks(): TaskResult {
 		// create basedir
-		if (basedir != "")
-			File(basedir).mkdirs()
-
-		// use Kobalt log level
-		val logLevel2 = logLevel
-			?: when (KobaltLogger.LOG_LEVEL) {
-				0 -> LogLevel.WARN
-				1 -> LogLevel.INFO
-				2 -> LogLevel.VERBOSE
-				3 -> LogLevel.DEBUG
-				else -> LogLevel.INFO
-			}
+		if (context.basedir != "")
+			File(context.basedir).mkdirs()
 
 		// execute Ant tasks
 		try {
-			execute(basedir, logLevel2)
+			execute()
 			return TaskResult()
 		} catch (e: BuildException) {
 			return TaskResult(false, e.message)
@@ -169,6 +161,16 @@ class AntTask(val taskName: String,
 	}
 }
 
+// use Kobalt log level
+private fun kobalt2antLogLevel() =
+	when (KobaltLogger.LOG_LEVEL) {
+		 0 -> LogLevel.WARN
+		 1 -> LogLevel.INFO
+		 2 -> LogLevel.VERBOSE
+		 3 -> LogLevel.DEBUG
+		 else -> LogLevel.INFO
+	}
+
 @Directive
 fun Project.antTask(taskName: String,
 		description: String = "", group: String = AnnotationDefault.GROUP,
@@ -178,12 +180,13 @@ fun Project.antTask(taskName: String,
 		inputFiles: Array<String>? = null, outputFiles: Array<String>? = null,
 		inputChecksum: (() -> String?)? = null, outputChecksum: (() -> String?)? = null,
 		basedir: String = "", logLevel: LogLevel? = null,
+		context: AntContext? = null,
 		tasks: AntTask.() -> Unit)
 = AntTask(taskName, description, group,
 		dependsOn, reverseDependsOn, runBefore, runAfter, alwaysRunAfter,
 		inputFiles, outputFiles,
 		inputChecksum, outputChecksum,
-		basedir, logLevel, tasks).apply {
+		basedir, logLevel, context, tasks).apply {
 	@Suppress("UNCHECKED_CAST")
 	val antTasks = projectProperties.get(AntTaskPlugin.ANT_TASKS) as ArrayList<AntTask>?
 		?: ArrayList<AntTask>().apply { projectProperties.put(AntTaskPlugin.ANT_TASKS, this) }
