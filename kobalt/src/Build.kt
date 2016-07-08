@@ -6,11 +6,11 @@ val plugin = project {
 	name = "kobalt-ant"
 	group = "com.devcharly"
 	artifactId = name
-	version = "0.2"
+	version = "0.3"
 
 	dependencies {
 		provided("com.beust:kobalt-plugin-api:")
-		compile("com.devcharly:kotlin-ant-dsl:0.3")
+		compile("com.devcharly:kotlin-ant-dsl:0.5")
 		compile("org.apache.ant:ant:1.9.7")
 	}
 
@@ -38,5 +38,5 @@ val plugin = project {
 val examples = project(plugin) {
 	name = "examples"
 	directory = "examples"
-	sourceDirectories { path("src") }
+	sourceDirectories { path("kobalt/src") }
 }
