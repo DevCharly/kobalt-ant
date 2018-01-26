@@ -3,6 +3,7 @@ import com.beust.kobalt.plugin.packaging.*
 import com.beust.kobalt.plugin.publish.bintray
 
 object Versions {
+	val kobalt = "1.0.100"
 	val kotlinAntDSL = "0.5"
 	val ant = "1.9.7"
 }
@@ -14,7 +15,7 @@ val plugin = project {
 	version = "0.3"
 
 	dependencies {
-		provided("com.beust:kobalt-plugin-api:")
+		provided("com.beust:kobalt-plugin-api:${Versions.kobalt}")
 		compile("com.devcharly:kotlin-ant-dsl:${Versions.kotlinAntDSL}")
 		compile("org.apache.ant:ant:${Versions.ant}")
 	}
@@ -46,6 +47,6 @@ val examples = project(plugin) {
 	sourceDirectories { path("kobalt/src") }
 
 	dependencies {
-		provided("com.beust:kobalt-plugin-api:")
+		provided("com.beust:kobalt-plugin-api:${Versions.kobalt}")
 	}
 }
