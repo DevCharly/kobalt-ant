@@ -12,7 +12,9 @@ Or [define functions](https://github.com/DevCharly/kotlin-ant-dsl#kotlin-ant-dsl
 to use your custom Ant tasks.
 
 ```kotlin
-val plugins = plugins("com.devcharly:kobalt-ant:")
+val bs = buildScript {
+    plugins("com.devcharly:kobalt-ant:")
+}
 
 val project = project {
     antTask("hello") {
@@ -32,7 +34,9 @@ val project = project {
 Kobalt's incremental tasks are supported:
 
 ```kotlin
-val plugins = plugins("com.devcharly:kobalt-ant:")
+val bs = buildScript {
+    plugins("com.devcharly:kobalt-ant:")
+}
 
 val project = project {
     antTask("copy-dir1-to-dir2",
@@ -58,7 +62,7 @@ See [Kotlin Ant DSL](https://github.com/DevCharly/kotlin-ant-dsl#supported-ant-f
 
 ## Requirements
 
-Kobalt 0.837 or later
+Kobalt 1.0.100 or later
 
 
 [Kobalt]: http://beust.com/kobalt
