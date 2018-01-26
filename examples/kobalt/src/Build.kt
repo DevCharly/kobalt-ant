@@ -2,23 +2,24 @@ import com.beust.kobalt.*
 import com.devcharly.kobalt.plugin.ant.*
 import com.devcharly.kotlin.ant.*
 
-val plugins = plugins("com.devcharly:kobalt-ant:")
+// use command line parameter "--profiles dev" to set this to true
+val dev by profile()
 
-// To run this examples build on a development machine, it is expected that projects
-//     https://github.com/DevCharly/kobalt-ant
-// and
-//     https://github.com/DevCharly/kotlin-ant-dsl
-// are checked out into the same parent folder. E.g.:
-//    /some-path/kobalt-ant
-//    /some-path/kotlin-ant-dsl
-
-//val bc = buildFileClasspath(
-//	file("../../kotlin-ant-dsl/kobaltBuild/classes")
-//)
-//
-//val plugins = plugins(
-//	file("../kobaltBuild/classes")
-//)
+val bs = buildScript {
+	if (!dev) {
+		plugins("com.devcharly:kobalt-ant:")
+	} else {
+		// To run this examples build on a development machine, it is expected that projects
+		//     https://github.com/DevCharly/kobalt-ant
+		// and
+		//     https://github.com/DevCharly/kotlin-ant-dsl
+		// are checked out into the same parent folder. E.g.:
+		//    /some-path/kobalt-ant
+		//    /some-path/kotlin-ant-dsl
+		buildFileClasspath(file("../../kotlin-ant-dsl/kobaltBuild/classes"))
+		plugins(file("../kobaltBuild/classes"))
+	}
+}
 
 
 val project = project {
