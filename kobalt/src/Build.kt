@@ -2,6 +2,11 @@ import com.beust.kobalt.*
 import com.beust.kobalt.plugin.packaging.*
 import com.beust.kobalt.plugin.publish.bintray
 
+object Versions {
+	val kotlinAntDSL = "0.5"
+	val ant = "1.9.7"
+}
+
 val plugin = project {
 	name = "kobalt-ant"
 	group = "com.devcharly"
@@ -10,8 +15,8 @@ val plugin = project {
 
 	dependencies {
 		provided("com.beust:kobalt-plugin-api:")
-		compile("com.devcharly:kotlin-ant-dsl:0.5")
-		compile("org.apache.ant:ant:1.9.7")
+		compile("com.devcharly:kotlin-ant-dsl:${Versions.kotlinAntDSL}")
+		compile("org.apache.ant:ant:${Versions.ant}")
 	}
 
 	assemble {
