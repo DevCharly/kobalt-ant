@@ -12,7 +12,7 @@ val plugin = project {
 	name = "kobalt-ant"
 	group = "com.devcharly"
 	artifactId = name
-	version = "0.3"
+	version = "0.4"
 
 	dependencies {
 		provided("com.beust:kobalt-plugin-api:${Versions.kobalt}")
