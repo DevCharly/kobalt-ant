@@ -141,7 +141,7 @@ class AntTask(val taskName: String,
 			execute()
 			return TaskResult()
 		} catch (e: BuildException) {
-			return TaskResult(false, e.message)
+			return TaskResult(false, null, e.message)
 		}
 	}
 
