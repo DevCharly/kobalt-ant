@@ -4,8 +4,8 @@ import com.beust.kobalt.plugin.publish.bintray
 
 object Versions {
 	val kobalt = "1.0.100"
-	val kotlinAntDSL = "0.5"
-	val ant = "1.9.7"
+	val kotlinAntDSL = "0.6"
+	val ant = "1.10.1"
 }
 
 val plugin = project {
